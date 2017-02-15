@@ -2,6 +2,7 @@ package edu.gmu.swe622.lab3;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,8 +19,7 @@ public class DiningPhilosophers {
 		}
 
 		public boolean pickUp(Philosopher who, String where) throws InterruptedException {
-			up.lock();
-			return true;
+			return up.tryLock(1, TimeUnit.MILLISECONDS);
 		}
 
 		public void putDown(Philosopher who, String name) {
@@ -66,8 +66,8 @@ public class DiningPhilosophers {
 
 			try {
 				while (!isTummyFull) {
-					System.out.println(this + " is ready to eat");
-
+					System.out.println(this + " is ready to eat chopsticks = " +leftChopStick.id + ", " + rightChopStick.id);
+					
 					// Make the mechanism obvious.
 					if (leftChopStick.pickUp(this, "left")) {
 						if (rightChopStick.pickUp(this, "right")) {
